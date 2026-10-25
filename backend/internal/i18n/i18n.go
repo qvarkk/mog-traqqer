@@ -17,7 +17,7 @@ import (
 	"go.uber.org/fx"
 	"golang.org/x/text/language"
 
-	"github.com/qvarkk/go-fiber-template/backend/internal/config"
+	"github.com/qvarkk/mog-traqqer/backend/internal/config"
 )
 
 //go:embed locales/*.json

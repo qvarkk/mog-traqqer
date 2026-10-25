@@ -10,7 +10,7 @@ import (
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 
-	"github.com/qvarkk/go-fiber-template/backend/internal/config"
+	"github.com/qvarkk/mog-traqqer/backend/internal/config"
 )
 
 func NewPool(lc fx.Lifecycle, cfg *config.Config, log *zap.Logger) (*pgxpool.Pool, error) {

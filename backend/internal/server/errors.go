@@ -9,7 +9,7 @@ import (
 	"github.com/gofiber/fiber/v3/middleware/requestid"
 	"go.uber.org/zap"
 
-	"github.com/qvarkk/go-fiber-template/backend/internal/i18n"
+	"github.com/qvarkk/mog-traqqer/backend/internal/i18n"
 )
 
 // ErrorBody describes a failure. Code is stable and never translated; Message

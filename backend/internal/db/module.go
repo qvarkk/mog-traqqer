@@ -4,7 +4,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"go.uber.org/fx"
 
-	"github.com/qvarkk/go-fiber-template/backend/internal/db/dbgen"
+	"github.com/qvarkk/mog-traqqer/backend/internal/db/dbgen"
 )
 
 // Module wires PostgreSQL into the FX graph. It belongs to cmd/users: the pool

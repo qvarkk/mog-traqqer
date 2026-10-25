@@ -4,7 +4,7 @@ BIN_DIR := bin
 VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 LDFLAGS := -s -w -X main.version=$(VERSION)
 
-COMPOSE := docker compose -f ../docker-compose.yml
+COMPOSE := docker compose -f ../compose.yaml
 
 .DEFAULT_GOAL := help
 
@@ -59,5 +59,5 @@ db-down: ## Stop the local stack, keeping the data volume
 	$(COMPOSE) down
 
 docker-build: ## Build both container images
-	docker build --build-arg SERVICE=users --build-arg VERSION=$(VERSION) -t go-fiber-template-users:local .
-	docker build --build-arg SERVICE=gateway --build-arg VERSION=$(VERSION) -t go-fiber-template-gateway:local .
+	docker build --build-arg SERVICE=users --build-arg VERSION=$(VERSION) -t mog-traqqer-users:local .
+	docker build --build-arg SERVICE=gateway --build-arg VERSION=$(VERSION) -t mog-traqqer-gateway:local .

@@ -9,11 +9,11 @@ import (
 	"go.uber.org/fx/fxevent"
 	"go.uber.org/zap"
 
-	"github.com/qvarkk/go-fiber-template/backend/internal/config"
-	"github.com/qvarkk/go-fiber-template/backend/internal/gateway"
-	"github.com/qvarkk/go-fiber-template/backend/internal/i18n"
-	"github.com/qvarkk/go-fiber-template/backend/internal/logger"
-	"github.com/qvarkk/go-fiber-template/backend/internal/server"
+	"github.com/qvarkk/mog-traqqer/backend/internal/config"
+	"github.com/qvarkk/mog-traqqer/backend/internal/gateway"
+	"github.com/qvarkk/mog-traqqer/backend/internal/i18n"
+	"github.com/qvarkk/mog-traqqer/backend/internal/logger"
+	"github.com/qvarkk/mog-traqqer/backend/internal/server"
 )
 
 var version = "dev"

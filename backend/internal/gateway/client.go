@@ -9,13 +9,11 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 
-	userv1 "github.com/qvarkk/go-fiber-template/backend/gen/user/v1"
-	"github.com/qvarkk/go-fiber-template/backend/internal/config"
+	"github.com/qvarkk/mog-traqqer/backend/internal/config"
 )
 
 // Client is the gateway's handle on the users service.
 type Client struct {
-	Users  userv1.UserServiceClient
 	health healthpb.HealthClient
 	conn   *grpc.ClientConn
 }
@@ -29,7 +27,6 @@ func NewClient(lc fx.Lifecycle, cfg *config.Config) (*Client, error) {
 	}
 
 	client := &Client{
-		Users:  userv1.NewUserServiceClient(conn),
 		health: healthpb.NewHealthClient(conn),
 		conn:   conn,
 	}

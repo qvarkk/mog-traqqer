@@ -10,7 +10,7 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 
-	"github.com/qvarkk/go-fiber-template/backend/internal/config"
+	"github.com/qvarkk/mog-traqqer/backend/internal/config"
 )
 
 const (

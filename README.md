@@ -1,7 +1,7 @@
-# go-fiber-template
+# mog-traqqer
 
-A backend template for Go services, split into two processes that communicate
-over gRPC:
+A weight-training tracker backend, split into processes that communicate over
+gRPC:
 
 - **`gateway`** — the public HTTP API, built with [Fiber v3](https://docs.gofiber.io/).
   It owns no business rules: it translates HTTP into gRPC calls.
@@ -125,7 +125,7 @@ The two services share one config struct but each reads a subset:
 | Variable | Default | Description |
 |---|---|---|
 | `APP_ENV` | `development` | `development`, `staging` or `production`. Controls log format: human-readable in development, JSON everywhere else. |
-| `APP_NAME` | `go-fiber-template` | Application name, used in logs and the Fiber app name. |
+| `APP_NAME` | `mog-traqqer` | Application name, used in logs and the Fiber app name. |
 | `LOG_LEVEL` | `info` | `debug`, `info`, `warn`, `error`, `dpanic`, `panic`, `fatal`. |
 | `LOG_FILE` | *(empty)* | Optional. Empty logs to stdout only — what containers want. When set, logs are **also** written there as rotated JSON. |
 
@@ -312,7 +312,7 @@ gateway knowing the validation rules.
 
 ```
 .
-├── docker-compose.yml               postgres + users + gateway
+├── compose.yaml                     postgres + users + gateway
 ├── backend/
 │   ├── cmd/
 │   │   ├── users/main.go            users service: composes db + grpcserver + user
@@ -531,7 +531,7 @@ committed.
 the gateway compiles against:
 
 ```go
-import userv1 "github.com/qvarkk/go-fiber-template/backend/gen/user/v1"
+import userv1 "github.com/qvarkk/mog-traqqer/backend/gen/user/v1"
 ```
 
 Generating into `internal/gen` would compile fine here and make the contract

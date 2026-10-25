@@ -12,7 +12,7 @@ import (
 	"github.com/pressly/goose/v3/lock"
 	"go.uber.org/zap"
 
-	"github.com/qvarkk/go-fiber-template/backend/internal/config"
+	"github.com/qvarkk/mog-traqqer/backend/internal/config"
 )
 
 //go:embed migrations/*.sql

@@ -1,5 +1,5 @@
-// Command users is the gRPC-only users microservice. It owns the users business
-// rules and the database; the HTTP gateway reaches it over gRPC.
+// Command users is the gRPC-only service that owns the database. Domain
+// services (auth, catalog, workouts) register against it in later phases.
 package main
 
 import (
@@ -9,11 +9,10 @@ import (
 	"go.uber.org/fx/fxevent"
 	"go.uber.org/zap"
 
-	"github.com/qvarkk/go-fiber-template/backend/internal/config"
-	"github.com/qvarkk/go-fiber-template/backend/internal/db"
-	"github.com/qvarkk/go-fiber-template/backend/internal/grpcserver"
-	"github.com/qvarkk/go-fiber-template/backend/internal/logger"
-	"github.com/qvarkk/go-fiber-template/backend/internal/user"
+	"github.com/qvarkk/mog-traqqer/backend/internal/config"
+	"github.com/qvarkk/mog-traqqer/backend/internal/db"
+	"github.com/qvarkk/mog-traqqer/backend/internal/grpcserver"
+	"github.com/qvarkk/mog-traqqer/backend/internal/logger"
 )
 
 var version = "dev"
@@ -24,7 +23,6 @@ func main() {
 		logger.Module,
 		db.Module,
 		grpcserver.Module,
-		user.Module,
 
 		fx.WithLogger(func(cfg *config.Config, log *zap.Logger) fxevent.Logger {
 			if cfg.App.Env.IsDevelopment() {

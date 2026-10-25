@@ -15,8 +15,6 @@ type Querier interface {
 	DeleteUser(ctx context.Context, id pgtype.UUID) (int64, error)
 	GetUser(ctx context.Context, id pgtype.UUID) (User, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
-	ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error)
-	UpdateUserDisplayName(ctx context.Context, arg UpdateUserDisplayNameParams) (User, error)
 }
 
 var _ Querier = (*Queries)(nil)

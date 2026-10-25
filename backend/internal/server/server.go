@@ -14,8 +14,8 @@ import (
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 
-	"github.com/qvarkk/go-fiber-template/backend/internal/config"
-	"github.com/qvarkk/go-fiber-template/backend/internal/i18n"
+	"github.com/qvarkk/mog-traqqer/backend/internal/config"
+	"github.com/qvarkk/mog-traqqer/backend/internal/i18n"
 )
 
 var Module = fx.Module("http-server", fx.Provide(New))

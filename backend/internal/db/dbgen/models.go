@@ -5,13 +5,211 @@
 package dbgen
 
 import (
+	"database/sql/driver"
+	"fmt"
+
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type ScheduleKind string
+
+const (
+	ScheduleKindRotation ScheduleKind = "rotation"
+	ScheduleKindWeekly   ScheduleKind = "weekly"
+)
+
+func (e *ScheduleKind) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = ScheduleKind(s)
+	case string:
+		*e = ScheduleKind(s)
+	default:
+		return fmt.Errorf("unsupported scan type for ScheduleKind: %T", src)
+	}
+	return nil
+}
+
+type NullScheduleKind struct {
+	ScheduleKind ScheduleKind `json:"schedule_kind"`
+	Valid        bool         `json:"valid"` // Valid is true if ScheduleKind is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullScheduleKind) Scan(value interface{}) error {
+	if value == nil {
+		ns.ScheduleKind, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.ScheduleKind.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullScheduleKind) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.ScheduleKind), nil
+}
+
+type Visibility string
+
+const (
+	VisibilityPrivate Visibility = "private"
+	VisibilityPublic  Visibility = "public"
+)
+
+func (e *Visibility) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = Visibility(s)
+	case string:
+		*e = Visibility(s)
+	default:
+		return fmt.Errorf("unsupported scan type for Visibility: %T", src)
+	}
+	return nil
+}
+
+type NullVisibility struct {
+	Visibility Visibility `json:"visibility"`
+	Valid      bool       `json:"valid"` // Valid is true if Visibility is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullVisibility) Scan(value interface{}) error {
+	if value == nil {
+		ns.Visibility, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.Visibility.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullVisibility) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.Visibility), nil
+}
+
+type Exercise struct {
+	ID         pgtype.UUID        `json:"id"`
+	OwnerID    pgtype.UUID        `json:"owner_id"`
+	Name       string             `json:"name"`
+	Visibility Visibility         `json:"visibility"`
+	CreatedAt  pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt  pgtype.Timestamptz `json:"updated_at"`
+	ArchivedAt pgtype.Timestamptz `json:"archived_at"`
+}
+
+type ExerciseMuscle struct {
+	ExerciseID    pgtype.UUID        `json:"exercise_id"`
+	MuscleGroupID pgtype.UUID        `json:"muscle_group_id"`
+	IsPrimary     bool               `json:"is_primary"`
+	UpdatedAt     pgtype.Timestamptz `json:"updated_at"`
+	DeletedAt     pgtype.Timestamptz `json:"deleted_at"`
+}
+
+type MuscleGroup struct {
+	ID        pgtype.UUID        `json:"id"`
+	OwnerID   pgtype.UUID        `json:"owner_id"`
+	Name      string             `json:"name"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt pgtype.Timestamptz `json:"updated_at"`
+	DeletedAt pgtype.Timestamptz `json:"deleted_at"`
+}
+
+type MuscleGroupAlias struct {
+	MuscleGroupID pgtype.UUID `json:"muscle_group_id"`
+	Alias         string      `json:"alias"`
+}
+
+type RefreshToken struct {
+	Jti        pgtype.UUID        `json:"jti"`
+	UserID     pgtype.UUID        `json:"user_id"`
+	DeviceInfo []byte             `json:"device_info"`
+	IsRevoked  bool               `json:"is_revoked"`
+	ExpiresAt  pgtype.Timestamptz `json:"expires_at"`
+	CreatedAt  pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt  pgtype.Timestamptz `json:"updated_at"`
+}
+
+type Routine struct {
+	ID         pgtype.UUID        `json:"id"`
+	UserID     pgtype.UUID        `json:"user_id"`
+	Name       string             `json:"name"`
+	Kind       ScheduleKind       `json:"kind"`
+	CycleWeeks int32              `json:"cycle_weeks"`
+	StartDate  pgtype.Date        `json:"start_date"`
+	CreatedAt  pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt  pgtype.Timestamptz `json:"updated_at"`
+	DeletedAt  pgtype.Timestamptz `json:"deleted_at"`
+}
+
+type RoutineDay struct {
+	ID        pgtype.UUID        `json:"id"`
+	RoutineID pgtype.UUID        `json:"routine_id"`
+	Position  int32              `json:"position"`
+	Name      string             `json:"name"`
+	WeekIndex *int32             `json:"week_index"`
+	Weekday   *int32             `json:"weekday"`
+	UpdatedAt pgtype.Timestamptz `json:"updated_at"`
+	DeletedAt pgtype.Timestamptz `json:"deleted_at"`
+}
+
+type RoutineDayExercise struct {
+	ID           pgtype.UUID               `json:"id"`
+	RoutineDayID pgtype.UUID               `json:"routine_day_id"`
+	Position     int32                     `json:"position"`
+	ExerciseID   pgtype.UUID               `json:"exercise_id"`
+	TargetSets   *int32                    `json:"target_sets"`
+	TargetReps   pgtype.Range[pgtype.Int4] `json:"target_reps"`
+	UpdatedAt    pgtype.Timestamptz        `json:"updated_at"`
+	DeletedAt    pgtype.Timestamptz        `json:"deleted_at"`
+}
+
+type SessionSet struct {
+	ID         pgtype.UUID        `json:"id"`
+	SessionID  pgtype.UUID        `json:"session_id"`
+	ExerciseID pgtype.UUID        `json:"exercise_id"`
+	SetNumber  int32              `json:"set_number"`
+	WeightKg   pgtype.Numeric     `json:"weight_kg"`
+	Reps       *int32             `json:"reps"`
+	Rpe        pgtype.Numeric     `json:"rpe"`
+	IsWarmup   bool               `json:"is_warmup"`
+	CreatedAt  pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt  pgtype.Timestamptz `json:"updated_at"`
+	DeletedAt  pgtype.Timestamptz `json:"deleted_at"`
+}
+
 type User struct {
-	ID          pgtype.UUID        `json:"id"`
-	Email       string             `json:"email"`
-	DisplayName string             `json:"display_name"`
-	CreatedAt   pgtype.Timestamptz `json:"created_at"`
-	UpdatedAt   pgtype.Timestamptz `json:"updated_at"`
+	ID           pgtype.UUID        `json:"id"`
+	Email        string             `json:"email"`
+	PasswordHash string             `json:"password_hash"`
+	CreatedAt    pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt    pgtype.Timestamptz `json:"updated_at"`
+}
+
+type UserExerciseStat struct {
+	UserID     pgtype.UUID        `json:"user_id"`
+	ExerciseID pgtype.UUID        `json:"exercise_id"`
+	WorkWeight pgtype.Numeric     `json:"work_weight"`
+	UpdatedAt  pgtype.Timestamptz `json:"updated_at"`
+}
+
+type WorkoutSession struct {
+	ID           pgtype.UUID        `json:"id"`
+	UserID       pgtype.UUID        `json:"user_id"`
+	RoutineID    pgtype.UUID        `json:"routine_id"`
+	RoutineDayID pgtype.UUID        `json:"routine_day_id"`
+	DayName      *string            `json:"day_name"`
+	StartedAt    pgtype.Timestamptz `json:"started_at"`
+	EndedAt      pgtype.Timestamptz `json:"ended_at"`
+	Notes        *string            `json:"notes"`
+	CreatedAt    pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt    pgtype.Timestamptz `json:"updated_at"`
+	DeletedAt    pgtype.Timestamptz `json:"deleted_at"`
 }

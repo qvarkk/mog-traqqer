@@ -1,4 +1,4 @@
-module github.com/qvarkk/go-fiber-template/backend
+module github.com/qvarkk/mog-traqqer/backend
 
 go 1.27.0
 

@@ -1,4 +1,4 @@
-name: go-fiber-template
+name: mog-traqqer
 
 services:
   postgres:

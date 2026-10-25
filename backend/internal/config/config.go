@@ -60,7 +60,7 @@ type AppConfig struct {
 	Env AppEnv `default:"development" validate:"required,validEnv"`
 
 	// Name is used for log fields and the fiber application name.
-	Name string `default:"go-fiber-template"`
+	Name string `default:"mog-traqqer"`
 }
 
 type LogConfig struct {
