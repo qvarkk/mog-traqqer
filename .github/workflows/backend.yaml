@@ -1,0 +1,143 @@
+name: Backend
+
+on:
+  push:
+    branches: [main, develop]
+    tags: ["v*"]
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend.yaml"
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend.yaml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  GO_VERSION: "1.27"
+  STATICCHECK_VERSION: "2026.2.2"
+  SQLC_VERSION: "1.31.1"
+  BUF_VERSION: "1.74.0"
+  PROTOC_GEN_GO_VERSION: "1.36.12"
+  PROTOC_GEN_GO_GRPC_VERSION: "1.6.2"
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Go
+        uses: actions/setup-go@v7
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: backend/go.sum
+
+      - name: Check that go.mod and go.sum are tidy
+        run: |
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum
+
+      - name: Install sqlc
+        run: go install github.com/sqlc-dev/sqlc/cmd/sqlc@${{ env.SQLC_VERSION }}
+
+      - name: Check that the generated query layer is up to date
+        run: sqlc diff
+
+      - name: Install protobuf tooling
+        run: |
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@${{ env.PROTOC_GEN_GO_VERSION }}
+          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@${{ env.PROTOC_GEN_GO_GRPC_VERSION }}
+          go install github.com/bufbuild/buf/cmd/buf@${{ env.BUF_VERSION }}
+
+      - name: Lint the protobuf definitions
+        run: buf lint
+
+      - name: Check that the generated protobuf code is up to date
+        run: |
+          buf generate
+          git diff --exit-code -- gen
+
+      - name: Verify dependencies
+        run: go mod verify
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Install staticcheck
+        run: go install honnef.co/go/tools/cmd/staticcheck@${{ env.STATICCHECK_VERSION }}
+
+      - name: Staticcheck
+        run: staticcheck ./...
+
+  docker:
+    name: Build and push image (${{ matrix.service }})
+    runs-on: ubuntu-latest
+    needs: verify
+    strategy:
+      matrix:
+        service: [users, gateway]
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE: ghcr.io/${{ github.repository }}-${{ matrix.service }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GHCR
+        if: github.event_name == 'push'
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.IMAGE }}
+          tags: |
+            type=sha,prefix=
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push
+        uses: docker/build-push-action@v7
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: ${{ github.event_name == 'push' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            SERVICE=${{ matrix.service }}
+            VERSION=${{ github.ref_name }}-${{ github.sha }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

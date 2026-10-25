@@ -1,0 +1,24 @@
+version: "2"
+
+sql:
+  - engine: "postgresql"
+
+    # sqlc reads the very migration files goose applies, so the schema has a
+    # single source of truth.
+    schema: "internal/db/migrations"
+    queries: "internal/db/queries"
+
+    gen:
+      go:
+        package: "dbgen"
+        out: "internal/db/dbgen"
+
+        # pgx/v5 so the generated code takes a pool directly, no database/sql.
+        sql_package: "pgx/v5"
+
+        # The Querier interface is what the service layer depends on.
+        emit_interface: true
+
+        emit_json_tags: true
+        emit_empty_slices: true
+        emit_pointers_for_null_types: true

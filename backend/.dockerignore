@@ -1,0 +1,25 @@
+# Build context hygiene: keep the context small and make sure local secrets and
+# build output never end up in an image layer.
+#
+# Note that .env files are excluded but .env.example is kept, so that a copied
+# template still documents its own configuration.
+
+.git
+.gitignore
+.gitattributes
+
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# Runtime and build output
+logs/
+*.log
+bin/
+tmp/
+coverage.out
+
+# Docker metadata (the Dockerfile itself is read by the builder, not the context)
+Dockerfile
+.dockerignore

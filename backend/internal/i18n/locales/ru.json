@@ -1,0 +1,26 @@
+{
+  "error.bad_request": "Некорректный запрос",
+  "error.unauthorized": "Требуется аутентификация",
+  "error.forbidden": "Доступ запрещён",
+  "error.not_found": "Ресурс не найден",
+  "error.method_not_allowed": "Метод не поддерживается",
+  "error.conflict": "Конфликт",
+  "error.payload_too_large": "Запрос слишком большой ",
+  "error.unprocessable_entity": "Не удалось обработать запрос",
+  "error.too_many_requests": "Первышено количество запросов",
+  "error.internal_error": "Внутренняя ошибка сервера",
+  "error.request_failed": "Запрос не выполнен",
+
+  "error.validation_failed": "запрос содержит некорректные поля",
+  "error.database_unavailable": "база данных недоступна",
+
+  "error.user_not_found": "пользователь с таким идентификатором не найден",
+  "error.email_taken": "этот адрес электронной почты уже зарегистрирован",
+
+  "validation.required": "обязательное поле",
+  "validation.email": "укажите корректный адрес электронной почты",
+  "validation.min": "длина должна быть не менее {{.Limit}} символов",
+  "validation.max": "длина не должна превышать {{.Limit}} символов",
+  "validation.uuid": "указан некорректный UUID",
+  "validation.unknown": "значение не удовлетворяет правилу {{.Rule}}"
+}

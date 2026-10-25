@@ -1,0 +1,26 @@
+{
+  "error.bad_request": "Bad Request",
+  "error.unauthorized": "Unauthorized",
+  "error.forbidden": "Forbidden",
+  "error.not_found": "Not Found",
+  "error.method_not_allowed": "Method Not Allowed",
+  "error.conflict": "Conflict",
+  "error.payload_too_large": "Request Entity Too Large",
+  "error.unprocessable_entity": "Unprocessable Entity",
+  "error.too_many_requests": "Too Many Requests",
+  "error.internal_error": "Internal Server Error",
+  "error.request_failed": "Request Failed",
+
+  "error.validation_failed": "the request contains invalid fields",
+  "error.database_unavailable": "the database is not reachable",
+
+  "error.user_not_found": "no user with that id",
+  "error.email_taken": "that email address is already registered",
+
+  "validation.required": "this field is required",
+  "validation.email": "this must be a valid email address",
+  "validation.min": "this must be at least {{.Limit}} characters long",
+  "validation.max": "this must be at most {{.Limit}} characters long",
+  "validation.uuid": "this must be a valid UUID",
+  "validation.unknown": "this does not satisfy the {{.Rule}} rule"
+}

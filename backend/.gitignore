@@ -1,0 +1,14 @@
+# Local secrets
+.env
+.env.local
+
+# Runtime output (only used when LOG_FILE is set)
+logs/
+*.log
+
+# Build output
+bin/
+
+# Test output
+coverage.out
+coverage.html

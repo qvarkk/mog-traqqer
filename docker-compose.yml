@@ -1,0 +1,72 @@
+name: go-fiber-template
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app
+    ports:
+      - "5432:5432"
+    volumes:
+      # PostgreSQL 18 sets PGDATA under /var/lib/postgresql, so mount the parent.
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d app"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  users:
+    build:
+      context: ./backend
+      args:
+        SERVICE: users
+        VERSION: dev
+    environment:
+      APP_ENV: development
+      LOG_LEVEL: debug
+
+      GRPC_ENABLED: "true"
+      GRPC_HOST: 0.0.0.0
+      GRPC_PORT: "9090"
+      GRPC_REFLECTION_ENABLED: "true"
+
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: app
+      DB_SSL_MODE: disable
+      DB_AUTO_MIGRATE: "true"
+    ports:
+      # Published only so grpcurl can reach it during development.
+      - "9090:9090"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  gateway:
+    build:
+      context: ./backend
+      args:
+        SERVICE: gateway
+        VERSION: dev
+    environment:
+      APP_ENV: development
+      LOG_LEVEL: debug
+
+      HTTP_HOST: 0.0.0.0
+      HTTP_PORT: "3000"
+
+      I18N_DEFAULT_LANGUAGE: en
+      USERS_ADDR: users:9090
+    ports:
+      - "3000:3000"
+    depends_on:
+      - users
+
+volumes:
+  postgres-data:
