@@ -1,5 +1,6 @@
 -- +goose Up
 
+-- +goose StatementBegin
 CREATE FUNCTION set_updated_at() RETURNS trigger
 LANGUAGE plpgsql AS $$
 BEGIN
@@ -7,6 +8,7 @@ BEGIN
     RETURN NEW;
 END;
 $$;
+-- +goose StatementEnd
 
 CREATE TYPE visibility AS ENUM ('private', 'public');
 
@@ -64,6 +66,7 @@ CREATE TABLE exercise_muscles (
 CREATE INDEX exercise_muscles_muscle_idx ON exercise_muscles (muscle_group_id);
 
 -- Rule: a public exercise may only reference system muscle groups.
+-- +goose StatementBegin
 CREATE FUNCTION check_public_exercise_muscles() RETURNS trigger
 LANGUAGE plpgsql AS $$
 BEGIN
@@ -80,12 +83,14 @@ BEGIN
     RETURN NEW;
 END;
 $$;
+-- +goose StatementEnd
 
 CREATE TRIGGER exercise_muscles_public_check
     BEFORE INSERT OR UPDATE ON exercise_muscles
     FOR EACH ROW EXECUTE FUNCTION check_public_exercise_muscles();
 
 -- Same rule when an existing exercise is switched to public.
+-- +goose StatementBegin
 CREATE FUNCTION check_exercise_made_public() RETURNS trigger
 LANGUAGE plpgsql AS $$
 BEGIN
@@ -102,6 +107,7 @@ BEGIN
     RETURN NEW;
 END;
 $$;
+-- +goose StatementEnd
 
 CREATE TRIGGER exercises_public_check
     BEFORE UPDATE OF visibility ON exercises

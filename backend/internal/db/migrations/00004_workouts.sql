@@ -98,6 +98,7 @@ CREATE INDEX session_sets_exercise_idx ON session_sets (exercise_id);
 
 -- updated_at triggers for every table that has the column. BEFORE UPDATE does
 -- not fire on INSERT, so clients (or column defaults) provide the initial value.
+-- +goose StatementBegin
 DO $$
 DECLARE t text;
 BEGIN
@@ -114,9 +115,11 @@ BEGIN
             t || '_set_updated_at', t);
     END LOOP;
 END $$;
+-- +goose StatementEnd
 
 -- +goose Down
 
+-- +goose StatementBegin
 DO $$
 DECLARE t text;
 BEGIN
@@ -130,6 +133,7 @@ BEGIN
         EXECUTE format('DROP TRIGGER IF EXISTS %I ON %I', t || '_set_updated_at', t);
     END LOOP;
 END $$;
+-- +goose StatementEnd
 
 DROP TABLE session_sets;
 DROP TABLE workout_sessions;

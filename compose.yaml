@@ -41,6 +41,8 @@ services:
       DB_NAME: app
       DB_SSL_MODE: disable
       DB_AUTO_MIGRATE: "true"
+
+      AUTH_JWT_SECRET: dev-secret-change-me
     ports:
       # Published only so grpcurl can reach it during development.
       - "9090:9090"

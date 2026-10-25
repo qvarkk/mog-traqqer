@@ -16,9 +16,14 @@
 
   "error.user_not_found": "no user with that id",
   "error.email_taken": "that email address is already registered",
+  "error.invalid_credentials": "invalid email or password",
+  "error.invalid_token": "the token is invalid",
+  "error.token_expired": "the refresh token has expired",
 
   "validation.required": "this field is required",
   "validation.email": "this must be a valid email address",
+  "validation.password_too_short": "the password must be at least 8 characters long",
+  "validation.password_too_long": "the password must be at most 72 characters long",
   "validation.min": "this must be at least {{.Limit}} characters long",
   "validation.max": "this must be at most {{.Limit}} characters long",
   "validation.uuid": "this must be a valid UUID",

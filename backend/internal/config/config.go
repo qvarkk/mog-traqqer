@@ -38,6 +38,7 @@ type Config struct {
 	DB    DBConfig
 	I18N  I18NConfig
 	Users UsersConfig
+	Auth  AuthConfig
 }
 
 // The available languages are not configured here: they are discovered from the
@@ -117,6 +118,20 @@ func (c GRPCConfig) Addr() string {
 // UsersConfig is where the gateway dials the users service.
 type UsersConfig struct {
 	Addr string `default:"localhost:9090"`
+}
+
+// AuthConfig configures token signing and password hashing. Only the users
+// service reads it; JWTSecret is empty by default and the auth service fails
+// fast when it is not set.
+type AuthConfig struct {
+	JWTSecret string `split_words:"true" default:""`
+
+	AccessTTL  time.Duration `split_words:"true" default:"15m" validate:"required"`
+	RefreshTTL time.Duration `split_words:"true" default:"720h" validate:"required"`
+
+	Argon2Memory      uint32 `split_words:"true" default:"65536" validate:"required,min=1024"`
+	Argon2Iterations  uint32 `split_words:"true" default:"1" validate:"required,min=1"`
+	Argon2Parallelism uint8  `split_words:"true" default:"4" validate:"required,min=1,max=8"`
 }
 
 type DBConfig struct {

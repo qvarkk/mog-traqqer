@@ -9,11 +9,13 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 
+	authv1 "github.com/qvarkk/mog-traqqer/backend/gen/auth/v1"
 	"github.com/qvarkk/mog-traqqer/backend/internal/config"
 )
 
 // Client is the gateway's handle on the users service.
 type Client struct {
+	Auth   authv1.AuthServiceClient
 	health healthpb.HealthClient
 	conn   *grpc.ClientConn
 }
@@ -27,6 +29,7 @@ func NewClient(lc fx.Lifecycle, cfg *config.Config) (*Client, error) {
 	}
 
 	client := &Client{
+		Auth:   authv1.NewAuthServiceClient(conn),
 		health: healthpb.NewHealthClient(conn),
 		conn:   conn,
 	}

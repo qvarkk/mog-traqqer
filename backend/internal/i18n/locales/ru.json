@@ -16,9 +16,14 @@
 
   "error.user_not_found": "пользователь с таким идентификатором не найден",
   "error.email_taken": "этот адрес электронной почты уже зарегистрирован",
+  "error.invalid_credentials": "неверный email или пароль",
+  "error.invalid_token": "токен недействителен",
+  "error.token_expired": "срок действия refresh-токена истёк",
 
   "validation.required": "обязательное поле",
   "validation.email": "укажите корректный адрес электронной почты",
+  "validation.password_too_short": "пароль должен быть не короче 8 символов",
+  "validation.password_too_long": "пароль должен быть не длиннее 72 символов",
   "validation.min": "длина должна быть не менее {{.Limit}} символов",
   "validation.max": "длина не должна превышать {{.Limit}} символов",
   "validation.uuid": "указан некорректный UUID",

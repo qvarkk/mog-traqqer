@@ -17,6 +17,7 @@ import (
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
 
+	"github.com/qvarkk/mog-traqqer/backend/internal/authn"
 	"github.com/qvarkk/mog-traqqer/backend/internal/config"
 )
 
@@ -30,6 +31,7 @@ func New(lc fx.Lifecycle, cfg *config.Config, log *zap.Logger) *grpc.Server {
 		grpc.ChainUnaryInterceptor(
 			UnaryLogger(log),
 			UnaryRecovery(log),
+			authn.UnaryAuth(cfg.Auth.JWTSecret, authn.PublicMethods()),
 		),
 	)
 
