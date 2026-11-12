@@ -19,6 +19,7 @@
   "error.invalid_credentials": "неверный email или пароль",
   "error.invalid_token": "токен недействителен",
   "error.token_expired": "срок действия refresh-токена истёк",
+  "error.muscle_group_not_found": "группа мышц не найдена",
 
   "validation.required": "обязательное поле",
   "validation.email": "укажите корректный адрес электронной почты",

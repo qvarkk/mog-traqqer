@@ -19,6 +19,7 @@
   "error.invalid_credentials": "invalid email or password",
   "error.invalid_token": "the token is invalid",
   "error.token_expired": "the refresh token has expired",
+  "error.muscle_group_not_found": "no muscle group with that id",
 
   "validation.required": "this field is required",
   "validation.email": "this must be a valid email address",

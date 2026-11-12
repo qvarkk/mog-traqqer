@@ -11,14 +11,19 @@ import (
 )
 
 type Querier interface {
+	CreateMuscleGroup(ctx context.Context, arg CreateMuscleGroupParams) (MuscleGroup, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteUser(ctx context.Context, id pgtype.UUID) (int64, error)
+	GetMuscleGroup(ctx context.Context, id pgtype.UUID) (MuscleGroup, error)
 	GetRefreshToken(ctx context.Context, jti pgtype.UUID) (RefreshToken, error)
 	GetUser(ctx context.Context, id pgtype.UUID) (User, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	InsertRefreshToken(ctx context.Context, arg InsertRefreshTokenParams) error
+	ListMuscleGroups(ctx context.Context, ownerID pgtype.UUID) ([]MuscleGroup, error)
 	RevokeRefreshToken(ctx context.Context, jti pgtype.UUID) (int64, error)
 	RevokeUserTokens(ctx context.Context, userID pgtype.UUID) (int64, error)
+	SoftDeleteMuscleGroup(ctx context.Context, id pgtype.UUID) (int64, error)
+	UpdateMuscleGroup(ctx context.Context, arg UpdateMuscleGroupParams) (MuscleGroup, error)
 }
 
 var _ Querier = (*Queries)(nil)

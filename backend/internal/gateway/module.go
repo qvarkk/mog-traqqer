@@ -27,4 +27,10 @@ func registerRoutes(app *fiber.App, handler *Handler) {
 	auth.Post("/refresh", handler.Refresh)
 	auth.Post("/logout", handler.Logout)
 	auth.Get("/me", handler.Me)
+
+	groups := app.Group("/api/v1/muscle-groups")
+	groups.Get("/", handler.ListMuscleGroups)
+	groups.Post("/", handler.CreateMuscleGroup)
+	groups.Patch("/:id", handler.UpdateMuscleGroup)
+	groups.Delete("/:id", handler.DeleteMuscleGroup)
 }

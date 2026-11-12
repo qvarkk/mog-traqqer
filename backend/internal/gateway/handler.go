@@ -11,6 +11,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	authv1 "github.com/qvarkk/mog-traqqer/backend/gen/auth/v1"
+	catalogv1 "github.com/qvarkk/mog-traqqer/backend/gen/catalog/v1"
 	"github.com/qvarkk/mog-traqqer/backend/internal/i18n"
 	"github.com/qvarkk/mog-traqqer/backend/internal/server"
 )
@@ -19,11 +20,12 @@ import (
 // rules: it binds JSON, dials the client and maps the gRPC result onto the HTTP
 // envelope.
 type Handler struct {
-	auth authv1.AuthServiceClient
+	auth    authv1.AuthServiceClient
+	catalog catalogv1.CatalogServiceClient
 }
 
 func NewHandler(client *Client) *Handler {
-	return &Handler{auth: client.Auth}
+	return &Handler{auth: client.Auth, catalog: client.Catalog}
 }
 
 type credentialsRequest struct {

@@ -10,6 +10,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/qvarkk/mog-traqqer/backend/internal/auth"
+	"github.com/qvarkk/mog-traqqer/backend/internal/catalog"
 	"github.com/qvarkk/mog-traqqer/backend/internal/config"
 	"github.com/qvarkk/mog-traqqer/backend/internal/db"
 	"github.com/qvarkk/mog-traqqer/backend/internal/grpcserver"
@@ -25,6 +26,7 @@ func main() {
 		db.Module,
 		grpcserver.Module,
 		auth.Module,
+		catalog.Module,
 
 		fx.WithLogger(func(cfg *config.Config, log *zap.Logger) fxevent.Logger {
 			if cfg.App.Env.IsDevelopment() {
